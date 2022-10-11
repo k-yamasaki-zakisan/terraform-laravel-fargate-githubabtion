@@ -16,10 +16,11 @@ services:
   web:
     container_name: web
     build:
-      context: ./docker
+      context: .
+      dockerfile: ./docker/local/Dockerfile
     ports:
       - "80:80"
     volumes:
-      - ./src:/var/www/html/src
+      - .:/var/www/html
     depends_on:
       - postgres
