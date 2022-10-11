@@ -1,6 +1,5 @@
 #!/bin/sh
 
-cd src
 composer install
 php artisan cache:clear
 php artisan config:clear

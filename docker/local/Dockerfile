@@ -26,5 +26,5 @@ COPY ./docker/deploy/000-default.conf /etc/apache2/sites-enabled/
 
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
-COPY . /var/www/html
-WORKDIR /var/www/html/src
+COPY ./src /var/www/html
+WORKDIR /var/www/html
