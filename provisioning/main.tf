@@ -8,14 +8,15 @@ terraform {
 }
 
 locals {
-  app_name = "laravel-fargate"
+  APP_NAME = "laravel-fargate"
+  AWS_DEFAULT_REGION = "ap-northeast-1"
 }
 
 provider "aws" {
   region = "ap-northeast-1"
   default_tags {
     tags = {
-      application = local.app_name
+      application = local.APP_NAME
     }
   }
 }

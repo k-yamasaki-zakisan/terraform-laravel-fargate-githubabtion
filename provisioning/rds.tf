@@ -1,5 +1,5 @@
 resource "aws_security_group" "private-db-sg" {
-  name = "${local.app_name}-private-db-sg"
+  name = "${local.APP_NAME}-private-db-sg"
   vpc_id = aws_vpc.main.id
 
   egress {
@@ -26,7 +26,7 @@ resource "aws_security_group_rule" "database_sg_rule" {
 
 resource "aws_db_instance" "survey_db" {
   db_name                 = "survey_db"
-  identifier              = "${local.app_name}-survey-db"
+  identifier              = "${local.APP_NAME}-survey-db"
   allocated_storage       = 20
   storage_type            = "gp2"
   engine                  = "postgres"

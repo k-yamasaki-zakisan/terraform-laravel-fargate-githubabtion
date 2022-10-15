@@ -6,7 +6,7 @@ resource "aws_vpc" "main" {
   cidr_block = "10.30.0.0/16"
 
   tags = {
-    Name = local.app_name
+    Name = local.APP_NAME
   }
 }
 
@@ -17,7 +17,7 @@ resource "aws_subnet" "public" {
   vpc_id                  = aws_vpc.main.id
   map_public_ip_on_launch = true
   tags = {
-    Type = "${local.app_name}-public-subnet"
+    Type = "${local.APP_NAME}-public-subnet"
   }
 }
 
@@ -27,7 +27,7 @@ resource "aws_subnet" "private" {
   availability_zone = data.aws_availability_zones.available_zones.names[count.index]
   vpc_id            = aws_vpc.main.id
   tags = {
-    Type = "${local.app_name}-private-subnet"
+    Type = "${local.APP_NAME}-private-subnet"
   }
 }
 
@@ -37,7 +37,7 @@ resource "aws_subnet" "private-db" {
   availability_zone = data.aws_availability_zones.available_zones.names[count.index]
   vpc_id            = aws_vpc.main.id
   tags = {
-    Type = "${local.app_name}-private-db-subnet"
+    Type = "${local.APP_NAME}-private-db-subnet"
   }
 }
 
@@ -45,7 +45,7 @@ resource "aws_db_subnet_group" "private-db" {
   name        = "private-db"
   subnet_ids  = aws_subnet.private-db.*.id
   tags = {
-    Name = "${local.app_name}-private-db-subnet-group"
+    Name = "${local.APP_NAME}-private-db-subnet-group"
   }
 }
 
@@ -88,7 +88,7 @@ resource "aws_route_table_association" "private" {
 }
 
 resource "aws_security_group" "lb" {
-  name        = "${local.app_name}-security-group"
+  name        = "${local.APP_NAME}-security-group"
   vpc_id      = aws_vpc.main.id
 
   ingress {
@@ -107,13 +107,13 @@ resource "aws_security_group" "lb" {
 }
 
 resource "aws_lb" "laravel_fargate" {
-  name            = "${local.app_name}-lb"
+  name            = "${local.APP_NAME}-lb"
   subnets         = aws_subnet.public.*.id
   security_groups = [aws_security_group.lb.id]
 }
 
 resource "aws_lb_target_group" "laravel_fargate" {
-  name        = "${local.app_name}-target-group"
+  name        = "${local.APP_NAME}-target-group"
   port        = 80
   protocol    = "HTTP"
   vpc_id      = aws_vpc.main.id

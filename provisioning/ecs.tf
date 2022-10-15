@@ -1,5 +1,5 @@
 resource "aws_ecs_task_definition" "ecs_task_definition" {
-  family                   = "${local.app_name}-app"
+  family                   = "${local.APP_NAME}-app"
   network_mode             = "awsvpc"
   requires_compatibilities = ["FARGATE"]
   cpu                      = 1024
@@ -55,8 +55,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     "logConfiguration": {
       "logDriver": "awslogs",
       "options": {
-        "awslogs-region": "ap-northeast-1",
-        "awslogs-group": "ecs-cluster-log-group",
+        "awslogs-region": "${local.AWS_DEFAULT_REGION}",
+        "awslogs-group": "${aws_cloudwatch_log_group.laravel_fargate_log_group.name}",
         "awslogs-stream-prefix": "ecs-container-log-stream"
       }
     }
@@ -66,7 +66,7 @@ DEFINITION
 }
 
 resource "aws_security_group" "ecs_security_group" {
-  name        = "${local.app_name}-task-security-group"
+  name        = "${local.APP_NAME}-task-security-group"
   vpc_id      = aws_vpc.main.id
 
   ingress {
@@ -84,12 +84,12 @@ resource "aws_security_group" "ecs_security_group" {
   }
 }
 resource "aws_ecs_cluster" "main" {
-  name = "example-cluster"
+  name = "${local.APP_NAME}-cluster"
 }
 
 
 resource "aws_ecs_service" "ecs_service" {
-  name            = "${local.app_name}-service"
+  name            = "${local.APP_NAME}-service"
   cluster         = aws_ecs_cluster.main.id
   task_definition = aws_ecs_task_definition.ecs_task_definition.arn
   desired_count   = var.app_count
