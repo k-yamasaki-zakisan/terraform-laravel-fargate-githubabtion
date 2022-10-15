@@ -44,6 +44,10 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     ],
     "secrets": [
       {
+        "name": "APP_KEY",
+        "valueFrom": "${aws_ssm_parameter.app_key.arn}"
+      },
+      {
         "name": "DB_HOST",
         "valueFrom": "${aws_ssm_parameter.db_host.arn}"
       },
@@ -61,7 +65,8 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       "options": {
         "awslogs-region": "${local.AWS_DEFAULT_REGION}",
         "awslogs-group": "${aws_cloudwatch_log_group.laravel_fargate_log_group.name}",
-        "awslogs-stream-prefix": "ecs-container-log-stream"
+        "awslogs-stream-prefix": "ecs-container-log-stream",
+        "awslogs-datetime-format": "%Y-%m-%d %H:%M:%S"
       }
     }
   }
