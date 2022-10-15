@@ -19,7 +19,7 @@ resource "aws_ssm_parameter" "db_username" {
 resource "aws_ssm_parameter" "db_host" {
   name  = "/${local.APP_NAME}/db_host"
   type  = "SecureString"
-  value = "postgresql://${aws_ssm_parameter.db_username.value}:${aws_ssm_parameter.db_password.value}@${aws_db_instance.survey_db.endpoint}/${aws_db_instance.survey_db.db_name}"
+  value = aws_db_instance.survey_db.address
 }
 
 resource "aws_ssm_parameter" "app_key" {

@@ -12,12 +12,12 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
     "image": "251392685720.dkr.ecr.ap-northeast-1.amazonaws.com/laravel-fargate:latest",
     "cpu": 1024,
     "memory": 2048,
-    "name": "hello-world-app",
+    "name": "${local.APP_NAME}-app",
     "networkMode": "awsvpc",
     "portMappings": [
       {
-        "containerPort": 3000,
-        "hostPort": 3000
+        "containerPort": 80,
+        "hostPort": 80
       }
     ],
     "environment": [
@@ -36,6 +36,10 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
       {
         "name": "DB_DATABASE",
         "value": "${aws_db_instance.survey_db.name}"
+      },
+      {
+        "name": "LOG_CHANNEL",
+        "value": "stderr"
       }
     ],
     "secrets": [
@@ -71,8 +75,8 @@ resource "aws_security_group" "ecs_security_group" {
 
   ingress {
     protocol        = "tcp"
-    from_port       = 3000
-    to_port         = 3000
+    from_port       = 80
+    to_port         = 80
     security_groups = [aws_security_group.lb.id]
   }
 
@@ -102,8 +106,8 @@ resource "aws_ecs_service" "ecs_service" {
 
   load_balancer {
     target_group_arn = aws_lb_target_group.laravel_fargate.id
-    container_name   = "hello-world-app"
-    container_port   = 3000
+    container_name   = "${local.APP_NAME}-app"
+    container_port   = 80
   }
 
   depends_on = [aws_lb_listener.laravel_fargate]
@@ -144,12 +148,12 @@ data "aws_iam_policy_document" "ecs_tasks_execution_secret_role" {
 
 resource "aws_iam_policy" "secret-policy" {
   name        = "secret-policy"
-  description = "A test policy"
+  description = " "
   policy = data.aws_iam_policy_document.ecs_tasks_execution_secret_role.json
 }
 
 resource "aws_iam_role" "ecs_tasks_execution_role" {
-  name               = "ecs-task-execution-role"
+  name               = "${local.APP_NAME}-ecs-task-execution-role"
   assume_role_policy = data.aws_iam_policy_document.ecs_tasks_execution_role.json
   managed_policy_arns = [
     "arn:aws:iam::aws:policy/service-role/AmazonECSTaskExecutionRolePolicy",
