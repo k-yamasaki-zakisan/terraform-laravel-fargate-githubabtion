@@ -30,6 +30,8 @@ COPY ./src /var/www/html
 WORKDIR /var/www/html
 
 RUN rm .env
+RUN composer install
+
 COPY ./docker/deploy/entry_point.sh /var/www/html/entry_point.sh
 RUN chmod a+x /var/www/html/entry_point.sh
 ENTRYPOINT /var/www/html/entry_point.sh
