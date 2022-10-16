@@ -13,7 +13,7 @@ locals {
 }
 
 provider "aws" {
-  region = "ap-northeast-1"
+  region = local.AWS_DEFAULT_REGION
   default_tags {
     tags = {
       application = local.APP_NAME

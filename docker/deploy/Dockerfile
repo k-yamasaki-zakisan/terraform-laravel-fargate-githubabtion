@@ -19,6 +19,8 @@ RUN apt update \
     pdo_pgsql \
     pgsql
 
+ENV TZ Asia/Tokyo
+
 RUN  a2enmod rewrite
 
 # apacheの設定ファイルを設置

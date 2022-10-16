@@ -42,7 +42,7 @@ resource "aws_subnet" "private-db" {
 }
 
 resource "aws_db_subnet_group" "private-db" {
-  name        = "private-db"
+  name        = "${local.APP_NAME}-private-db"
   subnet_ids  = aws_subnet.private-db.*.id
   tags = {
     Name = "${local.APP_NAME}-private-db-subnet-group"
@@ -89,6 +89,7 @@ resource "aws_route_table_association" "private" {
 
 resource "aws_security_group" "lb" {
   name        = "${local.APP_NAME}-security-group"
+  description = "${local.APP_NAME} alb rule based routing"
   vpc_id      = aws_vpc.main.id
 
   ingress {
@@ -106,9 +107,28 @@ resource "aws_security_group" "lb" {
   }
 }
 
+# resource "aws_security_group_rule" "alb_http" {
+#   from_port         = 80
+#   protocol          = "tcp"
+#   security_group_id = aws_security_group.lb.id
+#   to_port           = 80
+#   type              = "ingress"
+#   cidr_blocks = ["0.0.0.0/0"]
+# }
+
+# resource "aws_security_group_rule" "alb_https" {
+#   from_port         = 443
+#   protocol          = "tcp"
+#   security_group_id = aws_security_group.lb.id
+#   to_port           = 443
+#   type              = "ingress"
+#   cidr_blocks = ["0.0.0.0/0"]
+# }
+
 resource "aws_lb" "laravel_fargate" {
   name            = "${local.APP_NAME}-lb"
   subnets         = aws_subnet.public.*.id
+  load_balancer_type = "application"
   security_groups = [aws_security_group.lb.id]
 }
 
@@ -120,7 +140,7 @@ resource "aws_lb_target_group" "laravel_fargate" {
   target_type = "ip"
 }
 
-resource "aws_lb_listener" "laravel_fargate" {
+resource "aws_lb_listener" "http" {
   load_balancer_arn = aws_lb.laravel_fargate.id
   port              = "80"
   protocol          = "HTTP"

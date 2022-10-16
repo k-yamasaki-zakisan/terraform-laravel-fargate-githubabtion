@@ -115,7 +115,7 @@ resource "aws_ecs_service" "ecs_service" {
     container_port   = 80
   }
 
-  depends_on = [aws_lb_listener.laravel_fargate]
+  depends_on = [aws_lb_listener.http]
 }
 
 data "aws_iam_policy_document" "ecs_tasks_execution_role" {
@@ -143,6 +143,7 @@ data "aws_iam_policy_document" "ecs_tasks_execution_secret_role" {
       "ssm:GetParameters",
     ]
     resources = [
+      # "/${local.APP_NAME}/*"
       aws_ssm_parameter.db_password.arn,
       aws_ssm_parameter.db_username.arn,
       aws_ssm_parameter.db_host.arn,
@@ -152,8 +153,8 @@ data "aws_iam_policy_document" "ecs_tasks_execution_secret_role" {
 }
 
 resource "aws_iam_policy" "secret-policy" {
-  name        = "secret-policy"
-  description = " "
+  name        = "${local.APP_NAME}-secret-policy"
+  description = "${local.APP_NAME} secret policy"
   policy = data.aws_iam_policy_document.ecs_tasks_execution_secret_role.json
 }
 
