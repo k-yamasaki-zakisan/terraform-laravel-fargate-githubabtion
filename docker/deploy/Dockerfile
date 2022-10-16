@@ -31,7 +31,7 @@ RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local
 COPY ./src /var/www/html
 WORKDIR /var/www/html
 
-RUN rm .env
+RUN [ -e file ] && rm .env
 RUN composer install
 
 COPY ./docker/deploy/entry_point.sh /var/www/html/entry_point.sh
