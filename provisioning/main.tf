@@ -10,6 +10,8 @@ terraform {
 locals {
   APP_NAME = "laravel-fargate"
   AWS_DEFAULT_REGION = "ap-northeast-1"
+  HOST_DOMAIN = "spa-deploy-yamasaki.tk"
+  APP_DOMAIN_NAME = "app.spa-deploy-yamasaki.tk"
 }
 
 provider "aws" {

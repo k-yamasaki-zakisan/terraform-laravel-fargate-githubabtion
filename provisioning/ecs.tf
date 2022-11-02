@@ -9,7 +9,7 @@ resource "aws_ecs_task_definition" "ecs_task_definition" {
   container_definitions = <<DEFINITION
 [
   {
-    "image": "251392685720.dkr.ecr.ap-northeast-1.amazonaws.com/laravel-fargate:latest",
+    "image": "${aws_ecr_repository.default.repository_url}:latest",
     "cpu": 1024,
     "memory": 2048,
     "name": "${local.APP_NAME}-app",
